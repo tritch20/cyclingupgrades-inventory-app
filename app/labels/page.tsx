@@ -85,8 +85,6 @@ export default function LabelsPage() {
   const [defaultQuantity, setDefaultQuantity] = useState(1);
   const [statusMessage, setStatusMessage] = useState('');
 
-  const maxRow = labels.length;
-
   const expandedPrintLabels = useMemo(() => {
     const expanded: LabelRow[] = [];
 
@@ -215,7 +213,7 @@ export default function LabelsPage() {
 
   return (
     <main className="min-h-screen bg-gray-100 px-4 py-8">
-      <div className="mx-auto max-w-7xl">
+      <div className="labels-page mx-auto max-w-7xl">
         <div className="mb-6 flex flex-wrap items-center justify-between gap-4 print:hidden">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Label Generator</h1>
@@ -373,8 +371,7 @@ export default function LabelsPage() {
                   Loaded labels: <span className="font-semibold">{labels.length}</span>
                 </div>
                 <div>
-                  Selected rows:{' '}
-                  <span className="font-semibold">{selectedCount}</span>
+                  Selected rows: <span className="font-semibold">{selectedCount}</span>
                 </div>
                 <div>
                   Total labels to print:{' '}
@@ -474,7 +471,7 @@ export default function LabelsPage() {
                   ))}
                 </div>
 
-                <div className="hidden print:block">
+                <div className="print-only hidden print:block">
                   <div className="print-label-stack">
                     {expandedPrintLabels.map((label, index) => (
                       <div
@@ -590,21 +587,58 @@ export default function LabelsPage() {
 
         @media print {
           @page {
+            size: ${labelWidth}in ${labelHeight}in;
             margin: 0;
           }
 
           html,
           body {
-            background: white;
-            margin: 0;
-            padding: 0;
+            margin: 0 !important;
+            padding: 0 !important;
+            background: white !important;
+          }
+
+          body * {
+            visibility: hidden;
+          }
+
+          .print-only,
+          .print-only * {
+            visibility: visible;
+          }
+
+          .print-only {
+            position: absolute;
+            left: 0;
+            top: 0;
+            margin: 0 !important;
+            padding: 0 !important;
+            width: ${labelWidth}in;
+          }
+
+          .print-label-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            align-items: flex-start;
+            margin: 0 !important;
+            padding: 0 !important;
           }
 
           .label-sheet-item {
+            width: ${labelWidth}in !important;
+            height: ${labelHeight}in !important;
+            box-sizing: border-box;
+            margin: 0 !important;
+            padding: 0 !important;
             border: none !important;
-            page-break-inside: avoid;
-            break-inside: avoid;
-            margin: 0;
+            page-break-after: always;
+            break-after: page;
+          }
+
+          .label-sheet-item:last-child {
+            page-break-after: auto;
+            break-after: auto;
           }
         }
       `}</style>
