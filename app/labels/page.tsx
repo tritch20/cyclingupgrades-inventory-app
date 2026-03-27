@@ -22,25 +22,25 @@ type LabelRow = {
 };
 
 function BarcodePreview({ value }: { value: string }) {
-  const svgRef = useRef<SVGSVGElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    if (!svgRef.current || !value.trim()) return;
+    if (!canvasRef.current || !value.trim()) return;
 
     try {
-      JsBarcode(svgRef.current, value, {
+      JsBarcode(canvasRef.current, value, {
         format: 'CODE128',
         displayValue: false,
         margin: 0,
-        width: 1.1,
-        height: 24,
+        width: 2,
+        height: 40,
       });
     } catch {
-      // ignore barcode render errors
+      // ignore
     }
   }, [value]);
 
-  return <svg ref={svgRef} className="h-auto w-full" />;
+  return <canvas ref={canvasRef} style={{ width: '100%', height: '100%' }} />;
 }
 
 function parseRowRange(input: string, maxRow: number): number[] {
